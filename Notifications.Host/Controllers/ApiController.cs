@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -29,6 +30,7 @@ namespace Notifications.Host.Controllers
         [Route("WeeklyDigest")]
         public async Task<IActionResult> WeeklyDigest()
         {
+            Host.EnqueueDailyDigest();
             return new OkResult();
         }
     }

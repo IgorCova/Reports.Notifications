@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Diagnostics;
@@ -14,14 +13,21 @@ using Module.Tracing.Logging;
 using Medallion.Threading.Postgres;
 using Medallion.Threading;
 using Notifications.Host.Extensions;
+using Hangfire;
+using Hangfire.PostgreSql;
+using Microsoft.EntityFrameworkCore;
+using ILogger = Module.Logging.Core.ILogger;
+using Microsoft.Extensions.DependencyInjection;
+using LightInject;
 
 namespace Notifications.Host
 {
     public class Startup
     {
         private const string ServiceName = "Notifications.Host";
-        private const string ConnectionStringKey = "db.postgres";
-        private readonly IConfiguration _configuration;
+        private const string ConnectionStringKey = "db.reports";
+        private const string ConnectionPgStringKey = "db.postgres";
+        private readonly IConfiguration Configuration;
         private ILogger _logger;
 
         public Startup(IConfiguration configuration)
@@ -29,12 +35,16 @@ namespace Notifications.Host
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public static void ConfigureContainer(IServiceContainer container)
+        {
+            container.RegisterFrom<ContainerCompositionRoot>();
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = _configuration.GetConnectionString(ConnectionStringKey);
+            var connectionString = Configuration.GetConnectionString(ConnectionStringKey);
+            var connectionPgString = Configuration.GetConnectionString(ConnectionPgStringKey);
 
             #region Logging, tracing, metrics
 
@@ -44,7 +54,7 @@ namespace Notifications.Host
             services.AddSingleton(_logger);
 
             var tracer = Tracer.Factory.CreateTracer(configurator => configurator.UseLogging(_logger))
-                .ForComponent(Settings.Settings.ComponentName);
+                .ForComponent(Settings.ComponentName);
             services.AddSingleton(tracer);
 
             #endregion
@@ -61,6 +71,18 @@ namespace Notifications.Host
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Notifications.Host", Version = "v1" });
             });
+
+            #region Hangfire
+            services.AddHangfire(x => x.UsePostgreSqlStorage(connectionPgString));
+            services.AddHangfireServer();
+            services.AddEntityFrameworkNpgsql().AddDbContext<DefaultDbContext>(options =>
+            {
+                options.UseNpgsql(connectionPgString);
+            });
+            #endregion
+
+            var settings = new Settings(Configuration);
+            services.AddSingleton(factory => settings);
         }
 
         private static string GetServiceVersion()
@@ -94,6 +116,14 @@ namespace Notifications.Host
                 endpoints.MapControllers();
                 endpoints.MapHealthChecks("/health");
             });
+
+            app.UseHangfireDashboard(); //Will be available under http://localhost:9229/hangfire"
+
+            var options = new BackgroundJobServerOptions
+            {
+                Queues = new[] { "daily", "weekly" }
+            };
+            app.UseHangfireServer(options);
         }
     }
 }

@@ -1,11 +1,7 @@
-using System;
-using System.IO;
-using Microsoft.AspNetCore;
+using System.ComponentModel.Design;
+using LightInject.Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using Module.AspNetCore;
-using Module.Logging.Core;
-using Module.Logging.NLog;
+using Microsoft.AspNetCore;
 
 namespace Notifications.Host
 {
@@ -13,17 +9,30 @@ namespace Notifications.Host
     {
         public static void Main(string[] args)
         {
-            NLogBootstrapper.ConfigureFromEnvironment(Settings.Settings.ComponentName);
-            LoggingManager.Configure(c => c.SetComponentName(Settings.Settings.ComponentName).UseNLog());
-            Bootstrapper.Run<Startup>(new StartupParams
-            {
-                Url = "http://0.0.0.0:9229",
-                Args = args,
-                WebHostBuilderInitializer = builder =>
-                    builder.UseContentRoot(Directory.GetCurrentDirectory()),
-                HostBuilderInitializer = builder =>
-                    builder.ConfigureWebHostDefaults(webBuilder => { })
-            });
+            CreateWebHostBuilder(args).Build().Run();
         }
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseLightInject()
+                .UseUrls(new[] { "http://0.0.0.0:9229" })
+                .UseStartup<Startup>();
+
+        // public static void Main(string[] args)
+        // {
+        //     NLogBootstrapper.ConfigureFromEnvironment(Settings.ComponentName);
+        //     LoggingManager.Configure(c => c.SetComponentName(Settings.ComponentName).UseNLog());
+
+        //     var startupParams = new StartupParams
+        //     {
+        //         Urls = new[] { "http://0.0.0.0:9229" },
+        //         Args = args,
+        //         HostBuilderInitializer = builder =>
+        //             builder
+        //                 .UseLightInject()
+        //                 .UseStartup<Startup>()
+        //     };
+        //     Bootstrapper.Run<Startup>(startupParams);
+        // }
     }
 }
