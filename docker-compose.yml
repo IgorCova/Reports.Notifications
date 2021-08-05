@@ -1,0 +1,46 @@
+version: '3.7'
+
+services:
+    notifications_service:
+      environment:
+        - ASPNETCORE_ENVIRONMENT=Local
+      build:
+        dockerfile: ./Dockerfile
+        context: .
+        target: runtime
+      ports:
+        - "${SERVICE_PORT:-9229}"
+      working_dir: '/app'
+      restart: always
+      depends_on:
+      - notifications_postgres
+
+    notifications_postgres:
+      container_name: notifications_postgres
+      image: postgres:13.1
+      environment:
+        POSTGRES_DB: notifications
+        POSTGRES_USER: ${POSTGRES_USER:-postgres}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+        PGDATA: /data/postgres
+      volumes:
+        - notifications_postgres:/data/postgres
+      ports:
+        - "15432:5432"
+      restart: unless-stopped
+
+    notifications_pgadmin:
+      container_name: notifications_pgadmin
+      image: dpage/pgadmin4
+      environment:
+        PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+        PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      volumes:
+        - notifications_pgadmin:/root/.pgadmin
+      ports:
+        - "${PGADMIN_PORT:-5050}:80"
+      restart: unless-stopped
+
+volumes:
+    notifications_postgres:
+    notifications_pgadmin:

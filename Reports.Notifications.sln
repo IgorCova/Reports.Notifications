@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications.Host", "Notifications.Host\Notifications.Host.csproj", "{901EA804-734E-43D2-B965-87FB210F2F00}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reports.Notifications.Host", "src\Reports.Notifications.Host\Reports.Notifications.Host.csproj", "{901EA804-734E-43D2-B965-87FB210F2F00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications.EmailBuilder", "Notifications.EmailBuilder\Notifications.EmailBuilder.csproj", "{3553E56E-614D-4C9A-A1C0-534268CEC6B4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reports.Notifications.EmailBuilder", "src\Reports.Notifications.EmailBuilder\Reports.Notifications.EmailBuilder.csproj", "{3553E56E-614D-4C9A-A1C0-534268CEC6B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications.Sender", "Notifications.Sender\Notifications.Sender.csproj", "{9E15EA4E-00FE-47A4-A868-F304D7650119}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reports.Notifications.Sender", "src\Reports.Notifications.Sender\Reports.Notifications.Sender.csproj", "{9E15EA4E-00FE-47A4-A868-F304D7650119}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

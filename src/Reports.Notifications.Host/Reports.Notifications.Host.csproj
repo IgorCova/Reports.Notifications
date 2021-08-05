@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <RootNamespace>Reports.Notifications.Host</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.7.24" />
+        <PackageReference Include="Hangfire.Core" Version="1.7.24" />
+        <PackageReference Include="Hangfire.PostgreSql" Version="1.8.5.4" />
+        <PackageReference Include="LightInject" Version="6.4.0" />
+        <PackageReference Include="LightInject.Microsoft.AspNetCore.Hosting" Version="2.3.5" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
+        <PackageReference Include="Service.Scheduler.Client" Version="1.0.67" />
+        <PackageReference Include="Module.Amqp" Version="1.0.96" />
+        <PackageReference Include="Module.Amqp.LightInject" Version="1.0.46" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+        <PackageReference Include="Module.AspNetCore" Version="1.0.111" />
+        <PackageReference Include="Module.Logging.NLog" Version="1.0.87" />
+        <PackageReference Include="Module.Logging.Core" Version="1.0.118" />
+        <PackageReference Include="Module.Tracing.BasicTracer" Version="1.0.106" />
+        <PackageReference Include="Module.Tracing.Contract" Version="1.0.117" />
+        <PackageReference Include="Module.Tracing.Logging" Version="1.0.105" />
+        <PackageReference Include="DistributedLock" Version="2.0.1" />
+        <PackageReference Include="Module.GuestSearcher" Version="1.0.686-RKOFFICE-13777" />
+        <PackageReference Include="Module.Reporting.Providers" Version="1.0.132-RKOFFICE-13777" />
+    </ItemGroup>
+
+</Project>
