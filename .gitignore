@@ -4,3 +4,10 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 .idea/
+hooks
+info
+objects
+refs
+config
+description
+HEAD
